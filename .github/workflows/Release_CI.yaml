@@ -1,0 +1,55 @@
+name: Release CI
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
+
+permissions:
+  contents: write
+  id-token: write
+env:
+  JFROG_CLI_BUILD_NAME: "episod-js-build"
+  JFROG_CLI_LOG_LEVEL: DEBUG
+
+jobs:
+  jfrog:
+    name: Publish to jfrog npm
+    runs-on: ubuntu-latest
+    env:
+      SERVER_ID: Artifactory
+      JF_URL: ${{ secrets.JF_URL }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v4
+        id: login
+        with:
+          oidc-provider-name: ${{ secrets.OIDC_PROVIDER }}
+          oidc-audience: ${{ secrets.OIDC_AUDIENCE }}
+
+      - name: Set up Artifactory Server
+        run: jf c add $SERVER_ID --url=$JF_URL --access-token=${{ steps.login.outputs.oidc-token }} --interactive=false
+
+      - name: Configure npm
+        run: jf npm-config --server-id-deploy=$SERVER_ID --repo-deploy=odt-npm-release-local --repo-resolve=npm-remote
+
+      - name: Install dependencies
+        run: jf npm install
+
+      - name: Publish package to Artifactory
+        run: jf npm publish --server-id=$SERVER_ID
+
+      - name: Publish Build
+        run: jf rt bp  $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER --server-id=$SERVER_ID
+
+      - name: Scan build
+        run: jf build-scan $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER --server-id=$SERVER_ID

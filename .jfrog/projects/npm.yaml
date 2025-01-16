@@ -1,0 +1,8 @@
+version: 1
+type: npm
+resolver:
+  repo: npm-remote
+  serverId: ${{ secrets.ARTIFACTORY_URL }}
+deployer:
+  repo: ${{ secrets.DEPLOYER_REPO }}
+  serverId: ${{ secrets.ARTIFACTORY_URL }}

@@ -1,0 +1,33 @@
+{
+  "name": "@ingka-group/episod-client-js",
+  "version": "2.3.0",
+  "description": "Handles the payload sent to episod",
+  "main": "src/index.js",
+  "types": "index.d.ts",
+  "files": ["src", "index.d.ts", "README.md"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ingka-group/episod-client-js.git"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.24.4",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "verbose": true
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "episod",
+    "js",
+    "analytics"
+  ],
+  "author": "Håkan Haraldsson",
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
+}
