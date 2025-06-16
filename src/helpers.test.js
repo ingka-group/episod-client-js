@@ -78,28 +78,6 @@ describe('getValues', () => {
             c: [undefined],
         });
     })
-
-    it('replaces calls to functions that throw w/ undefined', async () => {
-        const obj = {
-            a: 'I am a string',
-            b: {
-                b1: 'I am also a string',
-                b2() {
-                    throw new Error('oh noes!');
-                },
-            }
-        };
-
-        const result = await getValues(obj);
-
-        expect(result).toEqual({
-            a: 'I am a string',
-            b: {
-                b1: 'I am also a string',
-                b2: undefined,
-            },
-        });
-    })
 });
 
 describe('removeNullsOrEmpty', () => {

@@ -209,11 +209,7 @@ const getValuesRecursive = async (obj, seenObjects) => {
   }
 
   if (typeof obj === 'function') {
-    try {
-      return await obj();
-    } catch {
-      return;
-    }
+    return await obj();
   }
 
   return obj;
