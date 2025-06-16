@@ -34,6 +34,72 @@ describe('getValues', () => {
             d: { d2: 'I am also a string'}
         });
     });
+
+    it('replaces properties that create cycles w/ undefined', async () => {
+        const obj = {
+            a: 'I am a string',
+            b: {
+                b1: 'I am also a string',
+            }
+        };
+        obj.b.b2 = obj;
+        obj.c = [obj];
+
+        const result = await getValues(obj);
+
+        expect(result).toEqual({
+            a: 'I am a string',
+            b: {
+                b1: 'I am also a string',
+                b2: undefined,
+            },
+            c: [undefined],
+        });
+    })
+
+    it('replaces properties that are global objects w/ undefined', async () => {
+        const obj = {
+            a: 'I am a string',
+            b: {
+                b1: 'I am also a string',
+                b2: globalThis,
+            },
+            c: [globalThis],
+        };
+
+        const result = await getValues(obj);
+
+        expect(result).toEqual({
+            a: 'I am a string',
+            b: {
+                b1: 'I am also a string',
+                b2: undefined,
+            },
+            c: [undefined],
+        });
+    })
+
+    it('replaces calls to functions that throw w/ undefined', async () => {
+        const obj = {
+            a: 'I am a string',
+            b: {
+                b1: 'I am also a string',
+                b2() {
+                    throw new Error('oh noes!');
+                },
+            }
+        };
+
+        const result = await getValues(obj);
+
+        expect(result).toEqual({
+            a: 'I am a string',
+            b: {
+                b1: 'I am also a string',
+                b2: undefined,
+            },
+        });
+    })
 });
 
 describe('removeNullsOrEmpty', () => {

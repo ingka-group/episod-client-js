@@ -190,30 +190,38 @@ export const getEventLocationTitle = () => {
   return document.title;
 }
 
+const getValuesRecursive = async (obj, seenObjects) => {
+  if (seenObjects.has(obj)) {
+    return;
+  }
+  
+  if (Array.isArray(obj)) {
+    return Promise.all(obj.map((value) => getValuesRecursive(value, seenObjects)));
+  }
 
-export const getValues = async (obj) => {
-  let result = {};
-  for (let key in obj) {
-    if (typeof obj[key] === 'function') {
-      result[key] = await obj[key]();
-    } else if (Array.isArray(obj[key])) {
-      result[key] = [];
-      for (let i = 0; i < obj[key].length; i++) {
-        if (typeof obj[key][i] === 'function') {
-          result[key].push(await obj[key][i]());
-        } else if (typeof obj[key][i] === 'object' && obj[key][i] !== null) {
-          result[key].push(await getValues(obj[key][i]));
-        } else {
-          result[key].push(obj[key][i]);
-        }
-      }
-    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-      result[key] = await getValues(obj[key]);
-    } else {
-      result[key] = obj[key];
+  if (typeof obj === 'object' && obj !== null) {
+    seenObjects.add(obj);
+    const result = {};
+    for (const key in obj) {
+      result[key] = await getValuesRecursive(obj[key], seenObjects);
+    }
+    return result;
+  }
+
+  if (typeof obj === 'function') {
+    try {
+      return await obj();
+    } catch {
+      return;
     }
   }
-  return result;
+
+  return obj;
+}
+
+export const getValues = async (obj) => {
+  const values = await getValuesRecursive(obj, new Set([globalThis || window]));
+  return values;
 }
 
 export const removeNullsOrEmpty = (obj) => {
