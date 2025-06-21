@@ -216,7 +216,7 @@ const getValuesRecursive = async (obj, seenObjects) => {
 }
 
 export const getValues = async (obj) => {
-  const values = await getValuesRecursive(obj, new Set([globalThis || window]));
+  const values = await getValuesRecursive(obj, new WeakSet([globalThis || window]));
   return values;
 }
 
