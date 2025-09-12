@@ -22,8 +22,8 @@ export const init = (config) => {
     batchXClientId,
   } = config;
 
-  if (!url || !xClientId) {
-    console.error('Episod requires url and xClientId to initialize');
+  if (!url) {
+    console.error('Episod requires url to initialize');
     return;
   }
 
@@ -33,7 +33,7 @@ export const init = (config) => {
   }
 
   if (batch && (!batchUrl || !batchXClientId)) {
-    console.error('Episod requires batchUrl and batchXClientId to initialize batch');
+    console.error('Episod requires batchUrl to initialize batch');
     return;
   }
 
