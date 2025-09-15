@@ -6,7 +6,9 @@
  */
 
 import { getServerTimestamp } from './timestamps';
+
 export const getQueryParam = (param) => {
+  if (typeof window === 'undefined') return null;
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(param);
 }
@@ -22,6 +24,7 @@ export const getRandomString = (length) => {
 }
 
 export const getCookieValue = (cookieName) => {
+  if (typeof document === 'undefined') return null;
   const cookieValue = document.cookie
     .split('; ')
     .find(row => row.startsWith(`${cookieName}=`))
@@ -71,6 +74,7 @@ export const getSessionData = (domain, endDate) => {
 }
 
 export const getClientData = (domain) => {
+  if (typeof document === 'undefined' || typeof window === 'undefined') return {};
   const cookieValue = getCookieValue('episod_id');
 
   const urlUser = getQueryParam('episod_test');
@@ -84,6 +88,7 @@ export const getClientData = (domain) => {
     if (partThree) {
       const parseThree = parseInt(partThree);
       if (Number.isInteger(parseThree)) {
+        // Old cookie format with timestamp in third part, mark as invalid
         invalidCookie = true;
       } else {
         testUser = partThree;
@@ -169,7 +174,8 @@ export const deepMerge = (obj1, obj2) => {
 }
 
 export const getClientLanguage = () => {
-  const language = typeof navigator !== 'undefined' ? navigator.language : undefined;
+  if (typeof navigator === 'undefined') return null;
+  const language = navigator.language;
   return language ? language.toLowerCase() : null;
 }
 
@@ -179,36 +185,53 @@ export const getUserLocalTimezone = () => {
 }
 
 export const getEventLocation = () => {
+  if (typeof window === 'undefined') return null;
   return decodeURIComponent(window.location.href).trim();
 }
 
 export const getEventReferringLocation = () => {
+  if (typeof document === 'undefined') return null;
   return document.referrer ? decodeURIComponent(document.referrer).trim() : null;
 }
 
 export const getEventLocationTitle = () => {
+  if (typeof document === 'undefined') return null;
   return document.title;
 }
 
 
-export const getValues = async (obj) => {
+export const getValues = async (obj, visited = new WeakSet()) => {
+  if (obj && typeof obj === 'object') {
+    if (visited.has(obj)) {
+      return; // Prevent infinite loop
+    }
+    visited.add(obj);
+  }
   let result = {};
   for (let key in obj) {
     if (typeof obj[key] === 'function') {
-      result[key] = await obj[key]();
+      try {
+        result[key] = await obj[key]();
+      } catch (e) {
+        result[key] = null;
+      }
     } else if (Array.isArray(obj[key])) {
       result[key] = [];
       for (let i = 0; i < obj[key].length; i++) {
         if (typeof obj[key][i] === 'function') {
-          result[key].push(await obj[key][i]());
+          try {
+            result[key].push(await obj[key][i]());
+          } catch (e) {
+            result[key].push(null);
+          }
         } else if (typeof obj[key][i] === 'object' && obj[key][i] !== null) {
-          result[key].push(await getValues(obj[key][i]));
+          result[key].push(await getValues(obj[key][i], visited));
         } else {
           result[key].push(obj[key][i]);
         }
       }
     } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-      result[key] = await getValues(obj[key]);
+      result[key] = await getValues(obj[key], visited);
     } else {
       result[key] = obj[key];
     }
@@ -238,10 +261,12 @@ export const removeNullsOrEmpty = (obj) => {
 }
 
 export const getInnerHeight = () => {
+  if (typeof window === 'undefined') return null;
   return window.innerHeight;
 }
 
 export const getInnerWidth = () => {
+  if (typeof window === 'undefined') return null;
   return window.innerWidth;
 }
 
@@ -312,4 +337,17 @@ export const getBatchPayload = (batch) => {
   })
 
   return { commons: intersection, events };
+}
+
+export const isSameHostname = (url) => {
+  if (typeof window === 'undefined' || !window.location || !window.location.hostname) {
+    return false;
+  }
+
+  try {
+    const inputHostname = new URL(url).hostname;
+    return inputHostname === window.location.hostname;
+  } catch {
+    return false; // Invalid URL
+  }
 }

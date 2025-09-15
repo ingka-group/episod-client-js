@@ -15,10 +15,11 @@ import {
   getInnerWidth,
   getUserLocalTimezone
 } from './helpers';
+import { version as packageVersion } from '../package.json';
 
 const defaultCommons = {
   schema_version: '2.4.0',
-  episod_client_version: '2.0.0',
+  episod_client_version: packageVersion,
   event_referring_location: getEventReferringLocation,
   event_location: getEventLocation,
   event_details: {

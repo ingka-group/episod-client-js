@@ -1,6 +1,6 @@
 {
   "name": "@ingka-group/episod-client-js",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "description": "Handles the payload sent to episod",
   "main": "src/index.js",
   "types": "index.d.ts",

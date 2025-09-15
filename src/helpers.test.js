@@ -34,6 +34,15 @@ describe('getValues', () => {
             d: { d2: 'I am also a string'}
         });
     });
+    it('should not enter an endless loop with circular references', async () => {
+        const obj = {};
+        obj.self = obj; // Circular reference
+
+        const result = await getValues(obj);
+
+        // The circular reference should be replaced with undefined
+        expect(result).toEqual({ self: undefined });
+    });
 });
 
 describe('removeNullsOrEmpty', () => {

@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { getBatchPayload } from "./helpers";
+import { getBatchPayload, isSameHostname } from "./helpers";
 import { get as getBatch, set as setBatch } from "./batch";
 import { get as getConfig } from "./config";
 import { set as setTimer } from "./timer";
 
 export const dispatch = async (payload, options = {}) => {
-  if (window.location.href.includes('localhost')) {
+  if (typeof window !== 'undefined' && window.location?.href?.includes('localhost')) {
     console.log('Dispatching event', payload);
     return;
   }
@@ -28,19 +28,30 @@ export const dispatch = async (payload, options = {}) => {
   let actualXClientId = xClientId;
 
   if (options.batch) {
-    if (!batchUrl || !batchXClientId) {
-      console.error('Episod requires batchUrl and batchXClientId to dispatch in batch');
+    if (!batchUrl) {
+      console.error('Episod requires batchUrl to dispatch in batch');
       return;
     }
     actualUrl = batchUrl;
     actualXClientId = batchXClientId;
   }
-  else if (!url || !xClientId) {
-    console.error('Episod requires url and xClientId to dispatch');
+  else if (!url) {
+    console.error('Episod requires url to dispatch');
     return;
   }
 
   const { expectResponse = false, keepalive = false } = options;
+
+  if (isSameHostname(url) && !expectResponse) {
+    const headers = {
+      type: 'application/json',
+    };
+    const blob = new Blob([JSON.stringify(payload)], headers);
+
+    navigator.sendBeacon(url, blob);
+    return;
+  }
+
   const fetchOptions = {
     method: 'POST',
     headers: {
