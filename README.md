@@ -113,6 +113,17 @@ const sendEpisodEvent = () => {
   sendEvent(event);
 }
 ```
+## Debugging
+To enable logging to console for debugging purposes, set the localStorage item 'episod-devtools' to the level of logging that is needed in your browser's console.
+
+Possible levels are: "verbose" (full payload) or "event" (the data sent in by the user).
+```javascript
+localStorage.setItem("episod-devtools", '{"logging":"verbose"}');
+```
+or 
+```javascript   
+localStorage.setItem("episod-devtools", '{"logging":"event"}');
+```
 
 ## Contributing
 Please read [CONTRIBUTING](./CONTRIBUTING.md) for more details about making a contribution to this open source project and ensure that you follow our [CODE_OF_CONDUCT](./CODE_OF_CONDUCT.md).

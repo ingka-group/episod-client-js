@@ -23,6 +23,27 @@ export const sendEvent = async (event, options = {}) => {
   const { batch: batchOverride, keepalive = false } = options;
   const payload = await constructPayload(event);
 
+  // If episod-devtools exists in localStorage, log event based on settings
+  let devtools = null;
+  if (typeof localStorage !== 'undefined') {
+    devtools = JSON.parse(localStorage.getItem('episod-devtools'));
+  }
+
+  if (devtools) {
+    const { logging } = devtools;
+
+    // Log event based on logging level
+    if (logging === 'verbose') {
+      // Log full payload
+      console.log('Event: ' + payload.event_name);
+      console.dir(payload);
+    } else if (logging === 'event') {
+      // Log only event details sent by user
+      console.log('Event: ' + event.event_name);
+      console.dir(event);
+    }
+  }
+
   if (config.batch && !(batchOverride === false)) {
     // If pageview, dispatch batch and then send pageview
     if (payload.event_name === 'pageview') {

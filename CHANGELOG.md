@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.4.1
+
+### Added
+
+- Added logging to console by checking setting in localStorage 'episod-devtools' to help with debugging during development.
+
 ## 2.4.0
 
 ### Added
