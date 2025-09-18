@@ -36,11 +36,11 @@ export const sendEvent = async (event, options = {}) => {
     if (logging === 'verbose') {
       // Log full payload
       console.log('Event: ' + payload.event_name);
-      console.dir(payload);
+      console.log(payload);
     } else if (logging === 'event') {
       // Log only event details sent by user
       console.log('Event: ' + event.event_name);
-      console.dir(event);
+      console.log(event);
     }
   }
 

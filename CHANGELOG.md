@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.4.2
+
+### Fixed
+
+- The intention of the change in 2.4.1 was to log to console for debugging sendBeacon calls that can't be seen in the network tab. console.dir however does not persist the log since it's a reference to an object that gets GC'd. Changed to console.log to persist the log. 
+
 ## 2.4.1
 
 ### Added
