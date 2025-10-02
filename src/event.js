@@ -5,18 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { dispatch, dispatchBatch } from "./dispatcher.js";
-import { push } from "./batch.js";
-import { set as setTimestamps } from "./timestamps.js";
-import { get as getCommons } from "./commons.js";
-import { get as getConfig } from "./config.js";
-import {
-  deepMerge,
-  getClientData,
-  getSessionData,
-  getValues,
-  removeNullsOrEmpty,
-} from "./helpers.js";
+import { dispatch, dispatchBatch } from './dispatcher.js';
+import { push } from './batch.js';
+import { set as setTimestamps } from './timestamps.js';
+import { get as getCommons } from './commons.js';
+import { get as getConfig } from './config.js';
+import { deepMerge, getClientData, getSessionData, getValues, removeNullsOrEmpty } from './helpers.js';
 
 export const sendEvent = async (event, options = {}) => {
   let config;
@@ -31,29 +25,29 @@ export const sendEvent = async (event, options = {}) => {
 
   // If episod-devtools exists in localStorage, log event based on settings
   let devtools = null;
-  if (typeof localStorage !== "undefined") {
-    devtools = JSON.parse(localStorage.getItem("episod-devtools"));
+  if (typeof localStorage !== 'undefined') {
+    devtools = JSON.parse(localStorage.getItem('episod-devtools'));
   }
 
   if (devtools) {
     const { logging } = devtools;
 
     // Log event based on logging level
-    if (logging === "verbose") {
+    if (logging === 'verbose') {
       // Log full payload
-      console.log("Event: " + payload.event_name);
+      console.log('Event: ' + payload.event_name);
       console.log(payload);
-    } else if (logging === "event") {
+    } else if (logging === 'event') {
       // Log only event details sent by user
-      console.log("Event: " + event.event_name);
+      console.log('Event: ' + event.event_name);
       console.log(event);
     }
   }
 
   if (config.batch && !(batchOverride === false)) {
     // If pageview, dispatch batch and then send pageview
-    if (payload.event_name === "pageview") {
-      dispatchBatch({ pageview_id: payload.pageview_id });
+    if (payload.event_name === 'pageview') {
+      dispatchBatch({ pageview_id : payload.pageview_id });
       const serverTimestamp = await dispatch(payload, { expectResponse: true });
       setTimestamps(payload.pageview_id, new Date(), new Date(serverTimestamp));
     } else {
@@ -63,7 +57,7 @@ export const sendEvent = async (event, options = {}) => {
   } else {
     dispatch(payload, { keepalive });
   }
-};
+}
 
 const constructPayload = async (event) => {
   let config;
@@ -78,8 +72,8 @@ const constructPayload = async (event) => {
   const { cookieDomain, disableCookies } = config;
 
   if (!disableCookies) {
-    const { clientId, endDate, testUser, firstVisit } = getClientData(cookieDomain);
-    const { sessionId, sessionStart, sessionNumber } = getSessionData(cookieDomain, endDate);
+    const {clientId, endDate, testUser, firstVisit} = getClientData(cookieDomain);
+    const {sessionId, sessionStart, sessionNumber} = getSessionData(cookieDomain, endDate);
 
     initialPayload = {
       client_id: clientId,
@@ -93,11 +87,11 @@ const constructPayload = async (event) => {
       },
       event_details: {
         client_event_id: crypto.randomUUID(),
-      },
-    };
+      }
+    }
   }
 
   const commons = getCommons();
 
   return removeNullsOrEmpty(await getValues(deepMerge(deepMerge(commons, initialPayload), event)));
-};
+}
