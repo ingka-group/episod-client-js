@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { init } from './init';
-import { set } from './commons';
-import { sendEvent } from './event';
+import { init } from './init.js';
+import { set } from './commons.js';
+import { sendEvent } from './event.js';
 
 export { init, set, sendEvent };

@@ -12,9 +12,9 @@ import {
     getUniquePairsDeep,
     deepIntersectObjects,
     getBatchPayload,
-} from './helpers';
+} from './helpers.js';
 
-import { set as setTimestamps } from "./timestamps";
+import { set as setTimestamps } from "./timestamps.js";
 
 describe('getValues', () => {
     it('should return the correct values', async () => {

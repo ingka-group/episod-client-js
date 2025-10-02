@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { get, set } from './commons';
+import { get, set } from './commons.js';
 
-import { version as packageVersion } from '../package.json';
+import packageJson from '../package.json' with { type: 'json' };
 
 test('package version is set correctly', () => {
     const commons = get();
-    expect(commons.episod_client_version).toBe(packageVersion);
+    expect(commons.episod_client_version).toBe(packageJson.version);
 });
 
 test('set updates commons with new attributes', () => {

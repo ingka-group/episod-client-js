@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { set as setCommons } from './commons';
-import { set as setConfig } from './config';
-import { dispatchBatch } from './dispatcher';
-import { set as setTimer } from "./timer";
+import { set as setCommons } from './commons.js';
+import { set as setConfig } from './config.js';
+import { dispatchBatch } from './dispatcher.js';
+import { set as setTimer } from "./timer.js";
 
 export const init = (config) => {
   const {
