@@ -198,6 +198,7 @@ export interface InitConfig {
   readonly xClientId: string;
   readonly commons?: EpisodEvent;
   readonly batch?: boolean;
+  readonly disableCookies?: boolean;
 }
 
 export function init(config: InitConfig): void;
