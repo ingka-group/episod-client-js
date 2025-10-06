@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { getBatchPayload, isSameHostname } from "./helpers";
-import { get as getBatch, set as setBatch } from "./batch";
-import { get as getConfig } from "./config";
-import { set as setTimer } from "./timer";
+import { getBatchPayload, isSameHostname } from "./helpers.js";
+import { get as getBatch, set as setBatch } from "./batch.js";
+import { get as getConfig } from "./config.js";
+import { set as setTimer } from "./timer.js";
 
 export const dispatch = async (payload, options = {}) => {
   if (typeof window !== 'undefined' && window.location?.href?.includes('localhost')) {

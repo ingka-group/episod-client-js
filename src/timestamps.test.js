@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {getOffsetTimestamp, getServerTimestamp, clear, set} from "./timestamps";
+import {getOffsetTimestamp, getServerTimestamp, clear, set} from "./timestamps.js";
 
 describe('getServerTimestamp', () => {
     it('should return the correct server timestamp', () => {

@@ -14,12 +14,12 @@ import {
   getInnerHeight,
   getInnerWidth,
   getUserLocalTimezone
-} from './helpers';
-import { version as packageVersion } from '../package.json';
+} from './helpers.js';
+import packageJson from '../package.json' with { type: 'json' };
 
 const defaultCommons = {
   schema_version: '2.4.0',
-  episod_client_version: packageVersion,
+  episod_client_version: packageJson.version,
   event_referring_location: getEventReferringLocation,
   event_location: getEventLocation,
   event_details: {

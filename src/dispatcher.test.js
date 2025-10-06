@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { dispatch } from './dispatcher';
+import { dispatch } from './dispatcher.js';
 
 global.window = Object.create(null);
 

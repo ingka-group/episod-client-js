@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { getServerTimestamp } from './timestamps';
+import { getServerTimestamp } from './timestamps.js';
 
 export const getQueryParam = (param) => {
   if (typeof window === 'undefined') return null;

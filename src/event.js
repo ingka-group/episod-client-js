@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { dispatch, dispatchBatch } from './dispatcher';
-import { push } from './batch';
-import { set as setTimestamps } from './timestamps';
-import { get as getCommons } from './commons';
-import { get as getConfig } from './config';
-import { deepMerge, getClientData, getSessionData, getValues, removeNullsOrEmpty } from './helpers';
+import { dispatch, dispatchBatch } from './dispatcher.js';
+import { push } from './batch.js';
+import { set as setTimestamps } from './timestamps.js';
+import { get as getCommons } from './commons.js';
+import { get as getConfig } from './config.js';
+import { deepMerge, getClientData, getSessionData, getValues, removeNullsOrEmpty } from './helpers.js';
 
 export const sendEvent = async (event, options = {}) => {
   let config;
