@@ -48,7 +48,7 @@ export const dispatch = async (payload, options = {}) => {
     };
     const blob = new Blob([JSON.stringify(payload)], headers);
 
-    navigator.sendBeacon(url, blob);
+    navigator.sendBeacon?.(url, blob);
     return;
   }
 
