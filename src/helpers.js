@@ -351,3 +351,39 @@ export const isSameHostname = (url) => {
     return false; // Invalid URL
   }
 }
+
+export const hasSendBeacon = () => {
+  return typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function';
+}
+
+export const logObjectRecursivelyAsTable = (obj, groupName = 'Object', groupStyle) => {
+  const tableData = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (Array.isArray(value)) {
+      tableData[key] = '[ ... ]';
+    } else if (value && typeof value === 'object') {
+      tableData[key] = '{ ... }';
+    } else {
+      tableData[key] = value;
+    }
+  }
+
+  console.groupCollapsed(groupName, groupStyle);
+  console.table(tableData);
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (Array.isArray(value)) {
+      const arraylogStyle = `background-color: orange; color: white; text-shadow: 1px 1px 1px black; font-weight: bold; font-size: 1em; border-radius: 1em;`;
+      console.groupCollapsed(`%c ${key}  `, arraylogStyle);
+      value.forEach((item, idx) => {
+        const itemGroupName = item && item.item_no ? `item_no: ${item.item_no}` : `Index ${idx}`;
+        logObjectRecursivelyAsTable(item, `%c ${itemGroupName}  `, arraylogStyle);
+      });
+      console.groupEnd();
+    } else if (value && typeof value === 'object') {
+      const nestedlogStyle = `background-color: green; color: white; text-shadow: 1px 1px 1px black; font-weight: bold; font-size: 1em; border-radius: 1em;`;
+      logObjectRecursivelyAsTable(value, `%c ${key}  `, nestedlogStyle);
+    }
+  }
+  console.groupEnd();
+}

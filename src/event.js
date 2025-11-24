@@ -10,7 +10,7 @@ import { push } from './batch.js';
 import { set as setTimestamps } from './timestamps.js';
 import { get as getCommons } from './commons.js';
 import { get as getConfig } from './config.js';
-import { deepMerge, getClientData, getSessionData, getValues, removeNullsOrEmpty } from './helpers.js';
+import { deepMerge, getClientData, getSessionData, getValues, removeNullsOrEmpty, logObjectRecursivelyAsTable } from './helpers.js';
 
 export const sendEvent = async (event, options = {}) => {
   let config;
@@ -31,16 +31,17 @@ export const sendEvent = async (event, options = {}) => {
 
   if (devtools) {
     const { logging } = devtools;
+    const logStyle = `background-color: blue; color: white; text-shadow: 1px 1px 1px black; font-weight: bold; font-size: 1em; border-radius: 1em;`;
 
     // Log event based on logging level
     if (logging === 'verbose') {
       // Log full payload
-      console.log('Event: ' + payload.event_name);
-      console.log(payload);
+      const logTitle = `⏱️ %c  Episod event: ${payload.event_name}  `;
+      logObjectRecursivelyAsTable(payload, logTitle, logStyle);
     } else if (logging === 'event') {
       // Log only event details sent by user
-      console.log('Event: ' + event.event_name);
-      console.log(event);
+      const logTitle = `⏱️ %c  Episod event: ${event.event_name}  `;
+      logObjectRecursivelyAsTable(event, logTitle, logStyle);
     }
   }
 
