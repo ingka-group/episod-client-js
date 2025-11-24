@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.4.3
+
+### Fixed
+
+- Another go at fixing the console logs. This time using console.table for better readability of the logged object and persistence in console.
+- Fixed an issue where navigator.sendbeacon was disabled in certain environments. If navigator.sendBeacon is not available, it will now fall back to fetch.
+- Fixed ESM imports to include file extension 
+
 ## 2.4.2
 
 ### Fixed

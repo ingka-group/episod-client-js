@@ -12,6 +12,8 @@ import {
     getUniquePairsDeep,
     deepIntersectObjects,
     getBatchPayload,
+    hasSendBeacon,
+    logObjectRecursivelyAsTable,
 } from './helpers.js';
 
 import { set as setTimestamps } from "./timestamps.js";
@@ -200,3 +202,74 @@ describe('getBatchPayload', () => {
         });
     });
 });
+
+// src/helpers.test.js
+
+describe('hasSendBeacon', () => {
+    let originalNavigator;
+
+    beforeEach(() => {
+        originalNavigator = global.navigator;
+    });
+
+    afterEach(() => {
+        global.navigator = originalNavigator;
+    });
+
+    it('should return true if navigator.sendBeacon exists', () => {
+        global.navigator = { sendBeacon: () => true };
+        expect(hasSendBeacon()).toBe(true);
+    });
+
+    it('should return false if navigator.sendBeacon does not exist', () => {
+        global.navigator = {};
+        expect(hasSendBeacon()).toBe(false);
+    });
+
+    it('should return false if navigator is undefined', () => {
+        global.navigator = undefined;
+        expect(hasSendBeacon()).toBe(false);
+    });
+});
+
+describe('logObjectRecursivelyAsTable', () => {
+    let groupCollapsedSpy, tableSpy, groupEndSpy;
+
+    beforeEach(() => {
+        groupCollapsedSpy = jest.spyOn(console, 'groupCollapsed').mockImplementation(() => {});
+        tableSpy = jest.spyOn(console, 'table').mockImplementation(() => {});
+        groupEndSpy = jest.spyOn(console, 'groupEnd').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('logs a flat object', () => {
+        const obj = { a: 1, b: 'test' };
+        logObjectRecursivelyAsTable(obj, 'TestGroup');
+        expect(groupCollapsedSpy).toHaveBeenCalledWith('TestGroup', undefined);
+        expect(tableSpy).toHaveBeenCalled();
+        expect(groupEndSpy).toHaveBeenCalled();
+    });
+
+    it('logs a nested object', () => {
+        const obj = { a: 1, b: { c: 2 } };
+        logObjectRecursivelyAsTable(obj, 'NestedGroup');
+        expect(groupCollapsedSpy).toHaveBeenCalledWith('NestedGroup', undefined);
+        expect(groupCollapsedSpy).toHaveBeenCalledWith(expect.stringContaining('b'), expect.any(String));
+        expect(tableSpy).toHaveBeenCalledTimes(2);
+        expect(groupEndSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('logs an array of objects', () => {
+        const obj = { arr: [{ item_no: 1, val: 2 }, { item_no: 2, val: 3 }] };
+        logObjectRecursivelyAsTable(obj, 'ArrayGroup');
+        expect(groupCollapsedSpy).toHaveBeenCalledWith('ArrayGroup', undefined);
+        expect(groupCollapsedSpy).toHaveBeenCalledWith(expect.stringContaining('arr'), expect.any(String));
+        expect(tableSpy).toHaveBeenCalled();
+        expect(groupEndSpy).toHaveBeenCalled();
+    });
+});
+
+

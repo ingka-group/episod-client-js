@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { getBatchPayload, isSameHostname } from "./helpers.js";
+import { getBatchPayload, isSameHostname, hasSendBeacon } from "./helpers.js";
 import { get as getBatch, set as setBatch } from "./batch.js";
 import { get as getConfig } from "./config.js";
 import { set as setTimer } from "./timer.js";
@@ -42,7 +42,7 @@ export const dispatch = async (payload, options = {}) => {
 
   const { expectResponse = false, keepalive = false } = options;
 
-  if (isSameHostname(url) && !expectResponse) {
+  if (hasSendBeacon() && isSameHostname(url) && !expectResponse) {
     const headers = {
       type: 'application/json',
     };
